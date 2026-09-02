@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Login | STORE
+{% endblock %}
+
+
+{% block content %}
+
+<section class="account-auth-page">
+
+    <div class="account-auth-inner">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="account-auth-header">
+
+            <p class="eyebrow">
+                WELCOME BACK
+            </p>
+
+            <h1>
+                Login
+            </h1>
+
+            <p>
+                Sign in to your STORE account to view your
+                orders and continue shopping.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             LOGIN FORM
+        ================================================== -->
+
+        <div class="account-auth-form">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+
+                {% if next %}
+
+                    <input
+                        type="hidden"
+                        name="next"
+                        value="{{ next }}"
+                    >
+
+                {% endif %}
+
+
+                {% if form.non_field_errors %}
+
+                    <div class="form-errors">
+
+                        {% for error in form.non_field_errors %}
+
+                            <p>
+                                {{ error }}
+                            </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- USERNAME -->
+
+                <div class="form-field">
+
+                    <label for="{{ form.username.id_for_label }}">
+                        Username
+                    </label>
+
+                    {{ form.username }}
+
+                    {% if form.username.errors %}
+
+                        <div class="field-errors">
+
+                            {% for error in form.username.errors %}
+
+                                <p>
+                                    {{ error }}
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-field">
+
+                    <label for="{{ form.password.id_for_label }}">
+                        Password
+                    </label>
+
+                    {{ form.password }}
+
+                    {% if form.password.errors %}
+
+                        <div class="field-errors">
+
+                            {% for error in form.password.errors %}
+
+                                <p>
+                                    {{ error }}
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="account-submit-button"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+            <!-- =================================================
+                 REGISTER
+            ================================================== -->
+
+            <div class="account-auth-footer">
+
+                <p>
+                    Don't have an account?
+                </p>
+
+                <a
+                    href="{% url 'accounts:register' %}"
+                >
+                    Create an Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

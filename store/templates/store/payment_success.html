@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Payment Successful | STORE
+{% endblock %}
+
+
+{% block content %}
+
+<section class="account-auth-page">
+
+    <div class="account-auth-inner">
+
+        <div class="account-auth-header">
+
+            <p class="eyebrow">
+                PAYMENT
+            </p>
+
+            <h1>
+                Payment Successful
+            </h1>
+
+            <p>
+                Your payment has been successfully verified.
+            </p>
+
+            <p>
+                Reference:
+                <strong>{{ reference }}</strong>
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

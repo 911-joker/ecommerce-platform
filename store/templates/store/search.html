@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load static wagtailimages_tags %}
+
+{% block title %}
+    {% if query %}
+        Search: {{ query }} | STORE
+    {% else %}
+        Search | STORE
+    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+<section class="search-page">
+
+    <div class="search-page-inner">
+
+        <!-- =====================================================
+             SEARCH HEADER
+        ====================================================== -->
+
+        <div class="search-page-header">
+
+            <p class="eyebrow">
+                Search
+            </p>
+
+            <h1>
+                {% if query %}
+                    Results for "{{ query }}"
+                {% else %}
+                    What are you looking for?
+                {% endif %}
+            </h1>
+
+        </div>
+
+
+        <!-- =====================================================
+             SEARCH FORM
+        ====================================================== -->
+
+        <form
+            method="get"
+            action="{% url 'store:search' %}"
+            class="search-page-form"
+        >
+
+            <div class="search-page-input-wrap">
+
+                <svg
+                    class="search-page-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <circle
+                        cx="11"
+                        cy="11"
+                        r="6.5"
+                    ></circle>
+
+                    <path
+                        d="M16 16L21 21"
+                    ></path>
+                </svg>
+
+
+                <input
+                    type="search"
+                    name="q"
+                    value="{{ query }}"
+                    placeholder="Search products..."
+                    autocomplete="off"
+                    aria-label="Search products"
+                >
+
+
+                {% if query %}
+
+                    <a
+                        href="{% url 'store:search' %}"
+                        class="search-clear"
+                        aria-label="Clear search"
+                    >
+                        ×
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="search-page-button"
+            >
+                Search
+            </button>
+
+        </form>
+
+
+        <!-- =====================================================
+             RESULTS COUNT
+        ====================================================== -->
+
+        {% if query %}
+
+            <div class="search-results-meta">
+
+                <p>
+                    {{ search_results|length }}
+                    result{{ search_results|length|pluralize }}
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             RESULTS
+        ====================================================== -->
+
+        {% if search_results %}
+
+            <div class="search-results-grid">
+
+                {% for result in search_results %}
+
+                    <article class="search-product-card">
+
+                        <a
+                            href="{{ result.product.url }}"
+                            class="search-product-image"
+                        >
+
+                            {% if result.image %}
+
+                                {% image result.image fill-800x1000 %}
+
+                            {% else %}
+
+                                <div class="search-product-placeholder">
+                                    No Image
+                                </div>
+
+                            {% endif %}
+
+                        </a>
+
+
+                        <div class="search-product-content">
+
+                            <h2 class="search-product-title">
+
+                                <a href="{{ result.product.url }}">
+                                    {{ result.product.title }}
+                                </a>
+
+                            </h2>
+
+
+                            {% if result.product.category %}
+
+                                <p class="search-product-category">
+                                    {{ result.product.category.name }}
+                                </p>
+
+                            {% endif %}
+
+
+                            <p class="search-product-price">
+                                ₦{{ result.product.price|floatformat:2 }}
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% elif query %}
+
+            <!-- =================================================
+                 NO RESULTS
+            ================================================== -->
+
+            <div class="search-no-results">
+
+                <h2>
+                    No products found.
+                </h2>
+
+                <p>
+                    We couldn't find anything matching
+                    "{{ query }}".
+                </p>
+
+                <a
+                    href="{% url 'store:shop' %}"
+                    class="search-back-button"
+                >
+                    Browse All Products
+                </a>
+
+            </div>
+
+
+        {% else %}
+
+            <!-- =================================================
+                 EMPTY SEARCH
+            ================================================== -->
+
+            <div class="search-empty">
+
+                <p>
+                    Search by product name, category,
+                    colour or size.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

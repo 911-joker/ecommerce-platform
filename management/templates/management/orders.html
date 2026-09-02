@@ -1,0 +1,190 @@
+{% extends "management/base.html" %}
+
+
+{% block title %}
+    Orders | Store Management
+{% endblock %}
+
+
+{% block page_title %}
+    Orders
+{% endblock %}
+
+
+{% block management_content %}
+
+<div class="management-page">
+
+
+    <div class="management-section-header">
+
+        <div>
+
+            <p class="management-eyebrow">
+                SALES
+            </p>
+
+            <h2>
+                Orders
+            </h2>
+
+            <p>
+                View customer orders and manage fulfilment status.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="management-table-container">
+
+        <table class="management-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Order
+                    </th>
+
+                    <th>
+                        Customer
+                    </th>
+
+                    <th>
+                        Items
+                    </th>
+
+                    <th>
+                        Total
+                    </th>
+
+                    <th>
+                        Payment
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for order in orders %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                #{{ order.id }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ order.first_name }}
+                                {{ order.last_name }}
+                            </strong>
+
+                            <small class="management-table-secondary">
+                                {{ order.email }}
+                            </small>
+
+                        </td>
+
+
+                        <td>
+                            {{ order.items.all|length }}
+                        </td>
+
+
+                        <td>
+                            ₦{{ order.total }}
+                        </td>
+
+
+                        <td>
+
+                            {% if order.status == "pending" %}
+
+                                <span class="management-status management-status-pending">
+                                    Pending
+                                </span>
+
+                            {% else %}
+
+                                <span class="management-status management-status-paid">
+                                    Paid
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="management-status management-status-{{ order.status }}">
+                                {{ order.get_status_display }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            {{ order.created_at|date:"d M Y" }}
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                href="{% url 'management:order_edit' order.id %}"
+                            >
+                                View
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="8">
+                            No orders found.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

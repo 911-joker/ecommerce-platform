@@ -1,0 +1,476 @@
+{% extends "base.html" %}
+
+{% load wagtailimages_tags %}
+
+
+{% block title %}
+    Shopping Cart | STORE
+{% endblock %}
+
+
+{% block content %}
+
+<section class="cart-page">
+
+    <!-- =====================================================
+         CART HEADER
+    ====================================================== -->
+
+    <div class="cart-header">
+
+        <div>
+
+            <p class="eyebrow">
+                YOUR SELECTION
+            </p>
+
+            <h1>
+                Shopping Cart
+            </h1>
+
+        </div>
+
+
+        {% if cart|length %}
+
+            <p class="cart-count">
+                {{ cart|length }}
+                {% if cart|length == 1 %}
+                    item
+                {% else %}
+                    items
+                {% endif %}
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    {% if cart|length %}
+
+        <div class="cart-layout">
+
+
+            <!-- =================================================
+                 CART ITEMS
+            ================================================== -->
+
+            <div class="cart-items">
+
+                {% for item in cart %}
+
+                    <article class="cart-item">
+
+
+                        <!-- =====================================
+                             PRODUCT IMAGE
+                        ====================================== -->
+
+                        <a
+                            href="{{ item.product.url }}"
+                            class="cart-item-image"
+                        >
+
+                            {% if item.variant and item.variant.image %}
+
+                                {% image item.variant.image fill-500x625 as cart_image %}
+
+                                <img
+                                    src="{{ cart_image.url }}"
+                                    alt="{{ item.product.title }}"
+                                >
+
+                            {% else %}
+
+                                <div class="cart-item-image-placeholder">
+                                    No image
+                                </div>
+
+                            {% endif %}
+
+                        </a>
+
+
+                        <!-- =====================================
+                             PRODUCT INFORMATION
+                        ====================================== -->
+
+                        <div class="cart-item-info">
+
+
+                            <div class="cart-item-heading">
+
+                                <div>
+
+                                    <p class="cart-item-category">
+                                        {% if item.product.category %}
+                                            {{ item.product.category.name }}
+                                        {% else %}
+                                            Collection
+                                        {% endif %}
+                                    </p>
+
+
+                                    <h2 class="cart-item-title">
+
+                                        <a href="{{ item.product.url }}">
+                                            {{ item.product.title }}
+                                        </a>
+
+                                    </h2>
+
+                                </div>
+
+
+                                <p class="cart-item-price">
+                                    ₦{{ item.price }}
+                                </p>
+
+                            </div>
+
+
+                            <!-- =================================
+                                 VARIANT
+                            ================================== -->
+
+                            {% if item.variant %}
+
+                                <div class="cart-item-variant">
+
+                                    <div>
+
+                                        <span>
+                                            Color
+                                        </span>
+
+                                        <strong>
+                                            {{ item.variant.color }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Size
+                                        </span>
+
+                                        <strong>
+                                            {{ item.variant.get_size_display }}
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =================================
+                                 STOCK WARNING
+                            ================================== -->
+
+                            {% if item.variant %}
+
+                                {% if item.quantity > item.variant.stock %}
+
+                                    <div class="cart-stock-warning">
+
+                                        <span class="cart-warning-dot"></span>
+
+                                        <div>
+
+                                            <strong>
+                                                Stock limit exceeded
+                                            </strong>
+
+                                            <p>
+                                                Only
+                                                {{ item.variant.stock }}
+                                                available for this
+                                                color and size.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                {% elif item.variant.stock == 0 %}
+
+                                    <div class="cart-stock-warning">
+
+                                        <span class="cart-warning-dot"></span>
+
+                                        <div>
+
+                                            <strong>
+                                                Out of stock
+                                            </strong>
+
+                                            <p>
+                                                This variant is currently
+                                                unavailable.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                {% else %}
+
+                                    <p class="cart-stock">
+
+                                        {{ item.variant.stock }}
+                                        available
+
+                                    </p>
+
+                                {% endif %}
+
+                            {% endif %}
+
+
+                            <!-- =================================
+                                 ITEM FOOTER
+                            ================================== -->
+
+                            <div class="cart-item-footer">
+
+
+                                <!-- =================================
+                                     QUANTITY
+                                ================================== -->
+
+                                <form
+                                    method="post"
+                                    action="{% url 'store:cart_update' item.product.id %}"
+                                    class="cart-quantity-form"
+                                >
+
+                                    {% csrf_token %}
+
+
+                                    {% if item.variant %}
+
+                                        <input
+                                            type="hidden"
+                                            name="variant_id"
+                                            value="{{ item.variant.id }}"
+                                        >
+
+                                    {% endif %}
+
+
+                                    <label
+                                        for="quantity-{{ item.product.id }}{% if item.variant %}-{{ item.variant.id }}{% endif %}"
+                                    >
+                                        Quantity
+                                    </label>
+
+
+                                    <div class="cart-quantity-control">
+
+                                        <input
+                                            id="quantity-{{ item.product.id }}{% if item.variant %}-{{ item.variant.id }}{% endif %}"
+                                            type="number"
+                                            name="quantity"
+                                            value="{{ item.quantity }}"
+                                            min="1"
+                                            {% if item.variant %}
+                                                max="{{ item.variant.stock }}"
+                                            {% endif %}
+                                        >
+
+
+                                        <button type="submit">
+                                            Update
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+
+                                <!-- =================================
+                                     SUBTOTAL + REMOVE
+                                ================================== -->
+
+                                <div class="cart-item-actions">
+
+                                    <div>
+
+                                        <span class="cart-subtotal-label">
+                                            Subtotal
+                                        </span>
+
+                                        <strong class="cart-subtotal">
+                                            ₦{{ item.total_price }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'store:cart_remove' item.product.id %}"
+                                    >
+
+                                        {% csrf_token %}
+
+
+                                        {% if item.variant %}
+
+                                            <input
+                                                type="hidden"
+                                                name="variant_id"
+                                                value="{{ item.variant.id }}"
+                                            >
+
+                                        {% endif %}
+
+
+                                        <button
+                                            type="submit"
+                                            class="cart-remove-button"
+                                        >
+                                            Remove
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- =================================================
+                 ORDER SUMMARY
+            ================================================== -->
+
+            <aside class="cart-summary">
+
+                <div class="cart-summary-inner">
+
+
+                    <p class="eyebrow">
+                        ORDER SUMMARY
+                    </p>
+
+
+                    <h2>
+                        Your Order
+                    </h2>
+
+
+                    <div class="cart-summary-line">
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <strong>
+                            ₦{{ cart.get_total_price }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="cart-summary-line">
+
+                        <span>
+                            Delivery
+                        </span>
+
+                        <span>
+                            Calculated at checkout
+                        </span>
+
+                    </div>
+
+
+                    <div class="cart-summary-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+                            ₦{{ cart.get_total_price }}
+                        </strong>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'store:checkout' %}"
+                        class="cart-checkout-button"
+                    >
+                        Proceed to Checkout
+                    </a>
+
+
+                    <a
+                        href="{% url 'store:shop' %}"
+                        class="continue-shopping"
+                    >
+                        Continue Shopping
+                    </a>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+    {% else %}
+
+
+        <!-- =================================================
+             EMPTY CART
+        ================================================== -->
+
+        <div class="empty-cart">
+
+            <div class="empty-cart-content">
+
+                <p class="eyebrow">
+                    YOUR SELECTION
+                </p>
+
+                <h2>
+                    Your cart is empty.
+                </h2>
+
+                <p>
+                    Discover something you'll love from our
+                    latest collection.
+                </p>
+
+
+                <a
+                    href="{% url 'store:shop' %}"
+                    class="empty-cart-button"
+                >
+                    Shop Collection
+                </a>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

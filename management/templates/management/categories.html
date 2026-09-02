@@ -1,0 +1,129 @@
+{% extends "management/base.html" %}
+
+
+{% block title %}
+    Categories | Store Management
+{% endblock %}
+
+
+{% block page_title %}
+    Categories
+{% endblock %}
+
+
+{% block management_content %}
+
+<div class="management-page">
+
+
+    <div class="management-section-header">
+
+        <div>
+
+            <p class="management-eyebrow">
+                CATALOG
+            </p>
+
+            <h2>
+                Categories
+            </h2>
+
+            <p>
+                Organise your product catalogue.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'management:category_create' %}"
+            class="management-action-button"
+        >
+            Add Category
+        </a>
+
+    </div>
+
+
+    <div class="management-table-container">
+
+        <table class="management-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Category
+                    </th>
+
+                    <th>
+                        Slug
+                    </th>
+
+                    <th>
+                        Products
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for category in categories %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ category.name }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ category.slug }}
+                        </td>
+
+                        <td>
+                            {{ category.products.count }}
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{% url 'management:category_edit' category.id %}"
+                            >
+                                Edit
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="4">
+                            No categories found.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

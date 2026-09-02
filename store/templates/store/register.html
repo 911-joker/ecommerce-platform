@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Create Account | STORE
+{% endblock %}
+
+
+{% block content %}
+
+<section class="auth-page">
+
+    <div class="auth-container">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="auth-header">
+
+            <p class="eyebrow">
+                ACCOUNT
+            </p>
+
+            <h1>
+                Create Account
+            </h1>
+
+            <p class="auth-intro">
+                Create your STORE account to checkout faster
+                and keep track of your orders.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             FORM
+        ================================================== -->
+
+        <form
+            method="post"
+            class="auth-form"
+        >
+
+            {% csrf_token %}
+
+
+            {% if form.non_field_errors %}
+
+                <div class="form-errors">
+
+                    {% for error in form.non_field_errors %}
+
+                        <p>
+                            {{ error }}
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            {% for field in form %}
+
+                <div class="form-field">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+
+                    {{ field }}
+
+
+                    {% if field.help_text %}
+
+                        <div class="form-help">
+                            {{ field.help_text }}
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if field.errors %}
+
+                        <div class="field-errors">
+
+                            {% for error in field.errors %}
+
+                                <p>
+                                    {{ error }}
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+
+            <button
+                type="submit"
+                class="auth-submit"
+            >
+                Create Account
+            </button>
+
+        </form>
+
+
+        <!-- =================================================
+             LOGIN LINK
+        ================================================== -->
+
+        <div class="auth-switch">
+
+            <p>
+                Already have an account?
+            </p>
+
+            <a href="{% url 'accounts:login' %}">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

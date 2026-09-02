@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% load wagtailimages_tags %}
+
+
+{% block title %}
+    {{ page.title }} | STORE
+{% endblock %}
+
+
+{% block content %}
+
+<section class="product-detail">
+
+    <div class="product-detail-inner">
+
+        <!-- =====================================================
+             PRODUCT IMAGE
+        ===================================================== -->
+
+        <div class="product-detail-image">
+
+            {% if page.variants.exists %}
+
+                {% with first_variant=page.variants.all.0 %}
+
+                    {% if first_variant.image %}
+
+                        {% image first_variant.image width-1200 as product_image %}
+
+                        <img
+                            src="{{ product_image.url }}"
+                            alt="{{ page.title }}"
+                            id="product-main-image"
+                        >
+
+                    {% else %}
+
+                        <div class="product-image-placeholder">
+                            No image available
+                        </div>
+
+                    {% endif %}
+
+                {% endwith %}
+
+            {% else %}
+
+                <div class="product-image-placeholder">
+                    No variants available
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =====================================================
+             PRODUCT INFORMATION
+        ===================================================== -->
+
+        <div class="product-detail-info">
+
+            {% if page.category %}
+
+                <p class="product-detail-category">
+                    {{ page.category.name }}
+                </p>
+
+            {% endif %}
+
+
+            <h1>
+                {{ page.title }}
+            </h1>
+
+
+            <p class="product-detail-price">
+                ₦{{ page.price }}
+            </p>
+
+
+            {% if page.description %}
+
+                <div class="product-detail-description">
+                    {{ page.description|linebreaks }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 VARIANTS
+            ================================================= -->
+
+            {% if page.variants.exists %}
+
+                <form
+                    method="post"
+                    action="{% url 'store:cart_add' page.id %}"
+                    class="product-detail-form"
+                    id="variant-form"
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- =================================================
+                         COLOR
+                    ================================================= -->
+
+                    <div class="product-option">
+
+                        <p class="product-option-label">
+                            Color
+                        </p>
+
+                        <div class="product-option-values">
+
+                            {% regroup page.variants.all by color as color_groups %}
+
+                            {% for color in color_groups %}
+
+                                {% with color_variant=color.list.0 %}
+
+                                    {% if color_variant.image %}
+
+                                        {% image color_variant.image width-1200 as color_image %}
+
+                                        <label class="option-button">
+
+                                            <input
+                                                type="radio"
+                                                name="color_choice"
+                                                value="{{ color.grouper }}"
+                                                data-image="{{ color_image.url }}"
+                                                {% if forloop.first %}
+                                                    checked
+                                                {% endif %}
+                                            >
+
+                                            <span>
+                                                {{ color.grouper }}
+                                            </span>
+
+                                        </label>
+
+                                    {% else %}
+
+                                        <label class="option-button">
+
+                                            <input
+                                                type="radio"
+                                                name="color_choice"
+                                                value="{{ color.grouper }}"
+                                                {% if forloop.first %}
+                                                    checked
+                                                {% endif %}
+                                            >
+
+                                            <span>
+                                                {{ color.grouper }}
+                                            </span>
+
+                                        </label>
+
+                                    {% endif %}
+
+                                {% endwith %}
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SIZE
+                    ================================================= -->
+
+                    <div class="product-option">
+
+                        <p class="product-option-label">
+                            Size
+                        </p>
+
+                        <div class="product-option-values">
+
+                            {% for variant in page.variants.all %}
+
+                                <label
+                                    class="option-button size-option"
+                                    data-color="{{ variant.color }}"
+                                >
+
+                                    <input
+                                        type="radio"
+                                        name="size_choice"
+                                        value="{{ variant.id }}"
+                                        data-color="{{ variant.color }}"
+                                        data-stock="{{ variant.stock }}"
+                                        disabled
+                                    >
+
+                                    <span>
+                                        {{ variant.size }}
+                                    </span>
+
+                                </label>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SELECTED VARIANT
+                    ================================================= -->
+
+                    <input
+                        type="hidden"
+                        name="variant_id"
+                        id="selected-variant"
+                        value=""
+                    >
+
+
+                    <!-- =================================================
+                         STOCK
+                    ================================================= -->
+
+                    <div class="product-detail-stock">
+
+                        <span
+                            class="stock-dot"
+                            id="stock-dot"
+                        ></span>
+
+                        <span id="variant-stock">
+                            Select a size
+                        </span>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         ADD TO CART
+                    ================================================= -->
+
+                    <button
+                        type="submit"
+                        class="product-detail-button"
+                        id="add-to-cart-button"
+                        disabled
+                    >
+                        Select Size
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <!-- =================================================
+                     NO VARIANTS
+                ================================================= -->
+
+                <div class="product-detail-stock">
+
+                    <span class="stock-dot out"></span>
+
+                    <span>
+                        This product is currently unavailable.
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =====================================================
+                 PRODUCT META
+            ===================================================== -->
+
+            <div class="product-meta">
+
+                <div>
+
+                    <span>
+                        Product
+                    </span>
+
+                    <strong>
+                        {{ page.title }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Category
+                    </span>
+
+                    {% if page.category %}
+
+                        <strong>
+                            {{ page.category.name }}
+                        </strong>
+
+                    {% else %}
+
+                        <strong>
+                            Uncategorized
+                        </strong>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 CONTINUE SHOPPING
+            ===================================================== -->
+
+            <a
+                href="/shop/"
+                class="back-to-shop"
+            >
+                ← Continue Shopping
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,422 @@
+{% extends "management/base.html" %}
+
+
+{% block title %}
+    {% if editing %}
+        Edit Product | Store Management
+    {% else %}
+        Add Product | Store Management
+    {% endif %}
+{% endblock %}
+
+
+{% block page_title %}
+    {% if editing %}
+        Edit Product
+    {% else %}
+        Add Product
+    {% endif %}
+{% endblock %}
+
+
+{% block management_content %}
+
+<div class="management-form-page">
+
+    <div class="management-section-header">
+
+        <div>
+
+            <p class="management-eyebrow">
+                CATALOG
+            </p>
+
+            <h2>
+                {% if editing %}
+                    Edit Product
+                {% else %}
+                    Add Product
+                {% endif %}
+            </h2>
+
+            <p>
+                {% if editing %}
+                    Update the product information and inventory variants.
+                {% else %}
+                    Create a new product and configure its variants.
+                {% endif %}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+    >
+
+        {% csrf_token %}
+
+
+        {% if form.non_field_errors %}
+
+            <div class="management-form-errors">
+                {{ form.non_field_errors }}
+            </div>
+
+        {% endif %}
+
+
+        <!-- PRODUCT INFORMATION -->
+
+        <section class="management-form-section">
+
+            <h3>
+                Product Information
+            </h3>
+
+
+            <div class="management-form-grid">
+
+                <div class="management-form-field">
+
+                    <label for="{{ form.title.id_for_label }}">
+                        Product Name
+                    </label>
+
+                    {{ form.title }}
+
+                    {{ form.title.errors }}
+
+                </div>
+
+
+                <div class="management-form-field">
+
+                    <label for="{{ form.category.id_for_label }}">
+                        Category
+                    </label>
+
+                    {{ form.category }}
+
+                    {{ form.category.errors }}
+
+                </div>
+
+
+                <div class="management-form-field">
+
+                    <label for="{{ form.price.id_for_label }}">
+                        Price
+                    </label>
+
+                    {{ form.price }}
+
+                    {{ form.price.errors }}
+
+                </div>
+
+            </div>
+
+
+            <div class="management-form-field">
+
+                <label for="{{ form.description.id_for_label }}">
+                    Description
+                </label>
+
+                {{ form.description }}
+
+                {{ form.description.errors }}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- VARIANTS -->
+
+        <section class="management-form-section">
+
+            <div class="management-section-header">
+
+                <div>
+
+                    <h3>
+                        Variants
+                    </h3>
+
+                    <p>
+                        Configure colors, sizes, stock and images for this product.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {{ formset.management_form }}
+
+
+            {% if formset.non_form_errors %}
+
+                <div class="management-form-errors">
+                    {{ formset.non_form_errors }}
+                </div>
+
+            {% endif %}
+
+
+            <div id="variant-forms">
+
+                {% for variant_form in formset %}
+
+                    <div class="variant-form">
+
+                        {{ variant_form.id }}
+
+
+                        {% if variant_form.non_field_errors %}
+
+                            <div class="management-form-errors">
+                                {{ variant_form.non_field_errors }}
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="variant-header">
+
+                            <h4>
+                                Variant
+                                <span class="variant-number">
+                                    {{ forloop.counter }}
+                                </span>
+                            </h4>
+
+
+                            {% if editing and variant_form.instance.pk %}
+
+                                <label class="variant-remove">
+
+                                    {{ variant_form.DELETE }}
+
+                                    <span>
+                                        Remove
+                                    </span>
+
+                                </label>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="management-form-grid">
+
+
+                            <div class="management-form-field">
+
+                                <label for="{{ variant_form.sku.id_for_label }}">
+                                    SKU
+                                </label>
+
+                                {{ variant_form.sku }}
+
+                                {{ variant_form.sku.errors }}
+
+                            </div>
+
+
+                            <div class="management-form-field">
+
+                                <label for="{{ variant_form.color.id_for_label }}">
+                                    Color
+                                </label>
+
+                                {{ variant_form.color }}
+
+                                {{ variant_form.color.errors }}
+
+                            </div>
+
+
+                            <div class="management-form-field">
+
+                                <label for="{{ variant_form.size.id_for_label }}">
+                                    Size
+                                </label>
+
+                                {{ variant_form.size }}
+
+                                {{ variant_form.size.errors }}
+
+                            </div>
+
+
+                            <div class="management-form-field">
+
+                                <label for="{{ variant_form.stock.id_for_label }}">
+                                    Stock
+                                </label>
+
+                                {{ variant_form.stock }}
+
+                                {{ variant_form.stock.errors }}
+
+                            </div>
+
+
+                            <div class="management-form-field">
+
+                                <label for="{{ variant_form.image.id_for_label }}">
+                                    Image
+                                </label>
+
+                                {{ variant_form.image }}
+
+                                {{ variant_form.image.errors }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- EMPTY VARIANT TEMPLATE -->
+
+            <template id="empty-variant-form">
+
+                <div class="variant-form">
+
+                    <div class="variant-header">
+
+                        <h4>
+                            Variant
+                            <span class="variant-number"></span>
+                        </h4>
+
+                    </div>
+
+
+                    <div class="management-form-grid">
+
+
+                        <div class="management-form-field">
+
+                            <label for="{{ formset.empty_form.sku.id_for_label }}">
+                                SKU
+                            </label>
+
+                            {{ formset.empty_form.sku }}
+
+                        </div>
+
+
+                        <div class="management-form-field">
+
+                            <label for="{{ formset.empty_form.color.id_for_label }}">
+                                Color
+                            </label>
+
+                            {{ formset.empty_form.color }}
+
+                        </div>
+
+
+                        <div class="management-form-field">
+
+                            <label for="{{ formset.empty_form.size.id_for_label }}">
+                                Size
+                            </label>
+
+                            {{ formset.empty_form.size }}
+
+                        </div>
+
+
+                        <div class="management-form-field">
+
+                            <label for="{{ formset.empty_form.stock.id_for_label }}">
+                                Stock
+                            </label>
+
+                            {{ formset.empty_form.stock }}
+
+                        </div>
+
+
+                        <div class="management-form-field">
+
+                            <label for="{{ formset.empty_form.image.id_for_label }}">
+                                Image
+                            </label>
+
+                            {{ formset.empty_form.image }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </template>
+
+
+            <div class="variant-add-area">
+
+                <button
+                    type="button"
+                    id="add-variant-button"
+                    class="management-secondary-button"
+                >
+                    + Add Variant
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ACTIONS -->
+
+        <div class="management-form-actions">
+
+            <a
+                href="{% url 'management:products' %}"
+                class="management-secondary-button"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="management-primary-button"
+            >
+
+                {% if editing %}
+                    Save Changes
+                {% else %}
+                    Create Product
+                {% endif %}
+
+            </button>
+
+        </div>
+
+
+    </form>
+
+</div>
+
+{% endblock %}

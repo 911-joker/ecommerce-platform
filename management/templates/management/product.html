@@ -1,0 +1,178 @@
+{% extends "management/base.html" %}
+
+
+{% block title %}
+    Products | Store Management
+{% endblock %}
+
+
+{% block page_title %}
+    Products
+{% endblock %}
+
+
+{% block management_content %}
+
+    <div class="management-section-header">
+
+        <div>
+
+            <p class="management-eyebrow">
+                CATALOG
+            </p>
+
+            <h2>
+                Products
+            </h2>
+
+            <p>
+                Manage the products available in your store.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <a
+                href="{% url 'management:product_create' %}"
+                class="management-action-button"
+            >
+                Add Product
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="management-table-container">
+
+        <table class="management-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Product
+                    </th>
+
+                    <th>
+                        Category
+                    </th>
+
+                    <th>
+                        Price
+                    </th>
+
+                    <th>
+                        Stock
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for product in products %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ product.title }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if product.category %}
+
+                                {{ product.category.name }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            ₦{{ product.price }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ product.total_stock }}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if product.live %}
+
+                                Active
+
+                            {% else %}
+
+                                Inactive
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                href="{% url 'management:product_edit' product.id %}"
+                            >
+                                Edit
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="6">
+
+                            No products found.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+{% endblock %}

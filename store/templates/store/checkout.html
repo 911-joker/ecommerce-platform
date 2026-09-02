@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Checkout | STORE
+{% endblock %}
+
+
+{% block content %}
+
+<section class="checkout-page">
+
+    <div class="checkout-container">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="checkout-header">
+
+            <p class="eyebrow">
+                CHECKOUT
+            </p>
+
+            <h1>
+                Complete Your Order
+            </h1>
+
+            <p>
+                Review your delivery information and order
+                before completing your purchase.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             CHECKOUT LAYOUT
+        ================================================== -->
+
+        <div class="checkout-layout">
+
+
+            <!-- =============================================
+                 DELIVERY INFORMATION
+            ============================================== -->
+
+            <div class="checkout-card">
+
+                <p class="checkout-card-label">
+                    DELIVERY INFORMATION
+                </p>
+
+                <h2>
+                    Where should we deliver?
+                </h2>
+
+
+                <div class="checkout-details">
+
+
+                    <div class="checkout-detail">
+
+                        <span>
+                            Name
+                        </span>
+
+                        <strong>
+                            {{ request.user.first_name }}
+                            {{ request.user.last_name }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="checkout-detail">
+
+                        <span>
+                            Email
+                        </span>
+
+                        <strong>
+                            {{ request.user.email }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="checkout-detail">
+
+                        <span>
+                            Phone
+                        </span>
+
+                        <strong>
+                            {{ request.user.customer_profile.phone }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="checkout-detail">
+
+                        <span>
+                            Address
+                        </span>
+
+                        <strong>
+                            {{ request.user.customer_profile.address }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="checkout-detail">
+
+                        <span>
+                            Location
+                        </span>
+
+                        <strong>
+                            {{ request.user.customer_profile.city }},
+                            {{ request.user.customer_profile.state }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="{% url 'accounts:profile' %}"
+                    class="checkout-edit-link"
+                >
+                    Edit Delivery Information
+                </a>
+
+            </div>
+
+
+            <!-- =============================================
+                 ORDER SUMMARY
+            ============================================== -->
+
+            <div class="checkout-card checkout-summary">
+
+                <p class="checkout-card-label">
+                    ORDER SUMMARY
+                </p>
+
+                <h2>
+                    Your Order
+                </h2>
+
+
+                <div class="checkout-items">
+
+                    {% for item in cart %}
+
+                        <div class="checkout-item">
+
+
+                            <div class="checkout-item-info">
+
+                                <h3>
+                                    {{ item.product.title }}
+                                </h3>
+
+                                {% if item.variant %}
+
+                                    <p>
+                                        {{ item.variant.color }}
+                                        /
+                                        {{ item.variant.size }}
+                                    </p>
+
+                                {% endif %}
+
+                                <span>
+                                    Quantity: {{ item.quantity }}
+                                </span>
+
+                            </div>
+
+
+                            <strong class="checkout-item-price">
+                                ₦{{ item.total_price }}
+                            </strong>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="checkout-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ₦{{ cart.get_total_price }}
+                    </strong>
+
+                </div>
+
+
+                <!-- =========================================
+                     PLACE ORDER
+                ========================================== -->
+
+                <form
+                    method="post"
+                    action="{% url 'store:payment_start' %}"
+                    class="checkout-form"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="checkout-submit-button"
+                    >
+                        Continue to Payment
+                    </button>
+
+                </form>
+
+
+                <a
+                    href="{% url 'store:cart' %}"
+                    class="checkout-back-link"
+                >
+                    ← Back to Cart
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

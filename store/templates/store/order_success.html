@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Order Confirmed | STORE
+{% endblock %}
+
+
+{% block content %}
+
+<section class="order-success-page">
+
+    <div class="order-success-container">
+
+
+        <!-- =================================================
+             CONFIRMATION HEADER
+        ================================================== -->
+
+        <header class="order-success-header">
+
+            <p class="eyebrow">
+                ORDER CONFIRMED
+            </p>
+
+            <h1>
+                Thank You,
+                {{ order.first_name }}.
+            </h1>
+
+            <p class="order-success-intro">
+                Your order has been received and is being prepared.
+            </p>
+
+            <div class="order-number">
+
+                <span>
+                    ORDER NUMBER
+                </span>
+
+                <strong>
+                    #{{ order.id }}
+                </strong>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             ORDER CONTENT
+        ================================================== -->
+
+        <div class="order-success-layout">
+
+
+            <!-- =============================================
+                 ORDER ITEMS
+            ============================================== -->
+
+            <div class="order-success-items">
+
+                <div class="order-section-heading">
+
+                    <p class="eyebrow">
+                        YOUR ORDER
+                    </p>
+
+                    <h2>
+                        Order Details
+                    </h2>
+
+                </div>
+
+
+                {% for item in order.items.all %}
+
+                    <article class="order-success-item">
+
+
+                        <!-- =================================
+                             ITEM IMAGE
+                        ================================== -->
+
+                        <div class="order-success-item-image">
+
+                            {% if item.variant and item.variant.image %}
+
+                                {% load wagtailimages_tags %}
+
+                                {% image item.variant.image fill-400x500 as item_image %}
+
+                                <img
+                                    src="{{ item_image.url }}"
+                                    alt="{{ item.product.title }}"
+                                >
+
+                            {% else %}
+
+                                <div class="order-success-image-placeholder">
+                                    No image
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- =================================
+                             ITEM INFORMATION
+                        ================================== -->
+
+                        <div class="order-success-item-info">
+
+                            <div class="order-success-item-heading">
+
+                                <div>
+
+                                    {% if item.product.category %}
+
+                                        <p class="order-success-category">
+                                            {{ item.product.category.name }}
+                                        </p>
+
+                                    {% endif %}
+
+                                    <h3>
+                                        {{ item.product.title }}
+                                    </h3>
+
+                                </div>
+
+
+                                <p class="order-success-item-price">
+                                    ₦{{ item.price }}
+                                </p>
+
+                            </div>
+
+
+                            <!-- =============================
+                                 VARIANT
+                            ============================== -->
+
+                            {% if item.variant %}
+
+                                <div class="order-success-variant">
+
+                                    <div>
+
+                                        <span>
+                                            Color
+                                        </span>
+
+                                        <strong>
+                                            {{ item.variant.color }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Size
+                                        </span>
+
+                                        <strong>
+                                            {{ item.variant.size }}
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =============================
+                                 QUANTITY
+                            ============================== -->
+
+                            <div class="order-success-item-meta">
+
+                                <div>
+
+                                    <span>
+                                        Quantity
+                                    </span>
+
+                                    <strong>
+                                        {{ item.quantity }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Subtotal
+                                    </span>
+
+                                    <strong>
+                                        ₦{{ item.price|floatformat:2 }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- =============================================
+                 ORDER SUMMARY
+            ============================================== -->
+
+            <aside class="order-success-summary">
+
+                <div class="order-success-summary-inner">
+
+                    <p class="eyebrow">
+                        ORDER SUMMARY
+                    </p>
+
+                    <h2>
+                        Your Order
+                    </h2>
+
+
+                    <div class="order-summary-row">
+
+                        <span>
+                            Order
+                        </span>
+
+                        <strong>
+                            #{{ order.id }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="order-summary-row">
+
+                        <span>
+                            Status
+                        </span>
+
+                        <strong>
+                            {{ order.get_status_display }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="order-summary-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+                            ₦{{ order.total }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="order-success-actions">
+
+                        <a
+                            href="{% url 'store:shop' %}"
+                            class="order-success-primary-button"
+                        >
+                            Continue Shopping
+                        </a>
+
+
+                        <a
+                            href="{% url 'store:order_history' %}"
+                            class="order-success-secondary-button"
+                        >
+                            View My Orders
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

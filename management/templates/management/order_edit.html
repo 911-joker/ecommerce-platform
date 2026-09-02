@@ -1,0 +1,258 @@
+{% extends "management/base.html" %}
+
+
+{% block title %}
+    Order #{{ order.id }} | Store Management
+{% endblock %}
+
+
+{% block page_title %}
+    Order #{{ order.id }}
+{% endblock %}
+
+
+{% block management_content %}
+
+<div class="management-form-page">
+
+
+    <div class="management-section-header">
+
+        <div>
+
+            <p class="management-eyebrow">
+                ORDER
+            </p>
+
+            <h2>
+                Order #{{ order.id }}
+            </h2>
+
+            <p>
+                {{ order.created_at|date:"d F Y, H:i" }}
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'management:orders' %}"
+            class="management-secondary-button"
+        >
+            Back to Orders
+        </a>
+
+    </div>
+
+
+    <section class="management-form-section">
+
+        <h3>
+            Customer
+        </h3>
+
+
+        <div class="management-order-details">
+
+            <p>
+                <strong>Name</strong>
+                {{ order.first_name }} {{ order.last_name }}
+            </p>
+
+            <p>
+                <strong>Email</strong>
+                {{ order.email }}
+            </p>
+
+            <p>
+                <strong>Phone</strong>
+                {{ order.phone }}
+            </p>
+
+            <p>
+                <strong>Address</strong>
+                {{ order.address }}
+            </p>
+
+            <p>
+                <strong>City</strong>
+                {{ order.city }}
+            </p>
+
+            <p>
+                <strong>State</strong>
+                {{ order.state }}
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="management-form-section">
+
+        <h3>
+            Order Items
+        </h3>
+
+
+        <div class="management-table-container">
+
+            <table class="management-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Product
+                        </th>
+
+                        <th>
+                            Variant
+                        </th>
+
+                        <th>
+                            Price
+                        </th>
+
+                        <th>
+                            Quantity
+                        </th>
+
+                        <th>
+                            Subtotal
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in order.items.all %}
+
+                        <tr>
+
+                            <td>
+                                {{ item.product.title }}
+                            </td>
+
+
+                            <td>
+
+                                {% if item.variant %}
+
+                                    {{ item.variant.color }}
+                                    /
+                                    {{ item.variant.size }}
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+                                ₦{{ item.price }}
+                            </td>
+
+
+                            <td>
+                                {{ item.quantity }}
+                            </td>
+
+
+                            <td>
+                                ₦{{ item.subtotal }}
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="management-order-total">
+
+            <span>
+                Order Total
+            </span>
+
+            <strong>
+                ₦{{ order.total }}
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <section class="management-form-section">
+
+        <h3>
+            Order Status
+        </h3>
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            <div class="management-form-field">
+
+                <label for="status">
+                    Status
+                </label>
+
+                <select
+                    name="status"
+                    id="status"
+                >
+
+                    {% for value, label in order.STATUS_CHOICES %}
+
+                        <option
+                            value="{{ value }}"
+                            {% if order.status == value %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ label }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="management-form-actions">
+
+                <button
+                    type="submit"
+                    class="management-primary-button"
+                >
+                    Update Status
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends "management/base.html" %}
+
+
+{% block title %}
+    Customers | Store Management
+{% endblock %}
+
+
+{% block page_title %}
+    Customers
+{% endblock %}
+
+
+{% block management_content %}
+
+<div class="management-page">
+
+    <div class="management-section-header">
+
+        <div>
+
+            <p class="management-eyebrow">
+                CUSTOMERS
+            </p>
+
+            <h2>
+                Customers
+            </h2>
+
+            <p>
+                View registered customers and their order history.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="management-table-container">
+
+        <table class="management-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Customer
+                    </th>
+
+                    <th>
+                        Email
+                    </th>
+
+                    <th>
+                        Phone
+                    </th>
+
+                    <th>
+                        Location
+                    </th>
+
+                    <th>
+                        Joined
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for customer in customers %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ customer.user.get_full_name|default:customer.user.username }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ customer.user.email }}
+                        </td>
+
+                        <td>
+                            {{ customer.phone|default:"—" }}
+                        </td>
+
+                        <td>
+
+                            {% if customer.city or customer.state %}
+
+                                {{ customer.city }}
+                                {% if customer.city and customer.state %}, {% endif %}
+                                {{ customer.state }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ customer.user.date_joined|date:"d M Y" }}
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{% url 'management:customer_detail' customer.id %}"
+                            >
+                                View
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="6">
+                            No customers found.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

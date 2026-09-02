@@ -1,0 +1,137 @@
+{% extends "management/base.html" %}
+
+
+{% block title %}
+
+    {% if editing %}
+        Edit Category | Store Management
+    {% else %}
+        Add Category | Store Management
+    {% endif %}
+
+{% endblock %}
+
+
+{% block page_title %}
+
+    {% if editing %}
+        Edit Category
+    {% else %}
+        Add Category
+    {% endif %}
+
+{% endblock %}
+
+
+{% block management_content %}
+
+<div class="management-form-page">
+
+
+    <div class="management-section-header">
+
+        <div>
+
+            <p class="management-eyebrow">
+                CATALOG
+            </p>
+
+            <h2>
+
+                {% if editing %}
+                    Edit Category
+                {% else %}
+                    Add Category
+                {% endif %}
+
+            </h2>
+
+            <p>
+                Manage your store catalogue categories.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <section class="management-form-section">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            {% if form.non_field_errors %}
+
+                <div class="management-form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+
+            {% endif %}
+
+
+            <div class="management-form-grid">
+
+
+                <div class="management-form-field">
+
+                    <label for="{{ form.name.id_for_label }}">
+                        Category Name
+                    </label>
+
+                    {{ form.name }}
+
+                    {{ form.name.errors }}
+
+                </div>
+
+
+                <div class="management-form-field">
+
+                    <label for="{{ form.slug.id_for_label }}">
+                        Slug
+                    </label>
+
+                    {{ form.slug }}
+
+                    {{ form.slug.errors }}
+
+                </div>
+
+
+            </div>
+
+
+            <div class="management-form-actions">
+
+                <a
+                    href="{% url 'management:categories' %}"
+                    class="management-secondary-button"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="management-primary-button"
+                >
+
+                    {% if editing %}
+                        Save Changes
+                    {% else %}
+                        Create Category
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% load wagtailimages_tags %}
+
+
+{% block title %}
+    {{ page.title }} | STORE
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+{% if page.hero_image %}
+
+    {% image page.hero_image original as hero %}
+
+    <section
+        class="editorial-section hero-section"
+        style="background-image: url('{{ hero.url }}');"
+    >
+
+        <div class="editorial-overlay"></div>
+
+        <div class="editorial-content">
+
+            <p class="eyebrow">
+                {{ page.hero_eyebrow }}
+            </p>
+
+            <h1>
+                {{ page.hero_title }}
+            </h1>
+
+            {% if page.hero_description %}
+
+                <p>
+                    {{ page.hero_description }}
+                </p>
+
+            {% endif %}
+
+            <a
+                href="/shop/"
+                class="primary-button"
+            >
+                Shop Collection
+            </a>
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+
+
+<!-- =====================================================
+     MEN / WOMEN
+===================================================== -->
+
+<section class="category-section">
+
+    <div class="section-inner">
+
+        <p class="eyebrow">
+            EXPLORE
+        </p>
+
+        <h2 class="section-title">
+            Find Your Style.
+        </h2>
+
+        <p class="section-description">
+            Explore our collections designed for every
+            style, occasion and everyday moment.
+        </p>
+
+
+        <div class="category-grid">
+
+
+            <!-- MEN -->
+
+            <article class="category-card">
+
+                {% if page.men_image %}
+
+                    {% image page.men_image original as men %}
+
+                    <img
+                        src="{{ men.url }}"
+                        alt="Men's Collection"
+                    >
+
+                {% endif %}
+
+                <div class="category-card-content">
+
+                    <h3>
+                        Men
+                    </h3>
+
+                    <a href="{% url 'store:men' %}">
+                        Explore Men's Collection
+                    </a>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- WOMEN -->
+
+            <article class="category-card">
+
+                {% if page.women_image %}
+
+                    {% image page.women_image original as women %}
+
+                    <img
+                        src="{{ women.url }}"
+                        alt="Women's Collection"
+                    >
+
+                {% endif %}
+
+                <div class="category-card-content">
+
+                    <h3>
+                        Women
+                    </h3>
+
+                    <a href="{% url 'store:women' %}">
+                        Explore Women's Collection
+                    </a>
+
+                </div>
+
+            </article>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     NEW PRODUCTS
+===================================================== -->
+
+<section class="product-section">
+
+    <div class="product-section-header">
+
+        <div>
+
+            <p class="eyebrow">
+                DISCOVER
+            </p>
+
+            <h2>
+                New Arrivals
+            </h2>
+
+        </div>
+
+        <a href="{% url 'store:shop' %}">
+            View All
+        </a>
+
+    </div>
+
+
+    <div class="product-grid">
+
+        {% with products=page.get_children.live %}
+
+            {% for product in products|slice:":4" %}
+
+                {% with product=product.specific %}
+
+                    <article class="product-card">
+
+                        <a
+                            href="{{ product.url }}"
+                            class="product-image"
+                        >
+
+                            {% if product.image %}
+
+                                {% image product.image fill-700x900 as product_image %}
+
+                                <img
+                                    src="{{ product_image.url }}"
+                                    alt="{{ product.title }}"
+                                >
+
+                            {% endif %}
+
+                        </a>
+
+
+                        <div class="product-card-content">
+
+                            <h3 class="product-title">
+                                {{ product.title }}
+                            </h3>
+
+                            <p class="product-price">
+                                ₦{{ product.price }}
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                {% endwith %}
+
+            {% empty %}
+
+                <p>
+                    No products available yet.
+                </p>
+
+            {% endfor %}
+
+        {% endwith %}
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     EDITORIAL SECTION
+===================================================== -->
+
+{% if page.editorial_image %}
+
+    {% image page.editorial_image original as editorial %}
+
+    <section
+        class="editorial-section editorial-final"
+        style="background-image: url('{{ editorial.url }}');"
+    >
+
+        <div class="editorial-overlay"></div>
+
+        <div class="editorial-content">
+
+            <p class="eyebrow">
+                THE COLLECTION
+            </p>
+
+            <h2>
+                Elevate Your Everyday.
+            </h2>
+
+            <p>
+                Discover pieces designed to make
+                every moment feel effortless.
+            </p>
+
+            <a
+                href="/shop/"
+                class="primary-button"
+            >
+                Shop Now
+            </a>
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+
+{% endblock %}

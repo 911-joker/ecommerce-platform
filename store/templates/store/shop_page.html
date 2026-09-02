@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% load wagtailimages_tags %}
+
+
+{% block title %}
+    {{ page_title }} | STORE
+{% endblock %}
+
+
+{% block content %}
+
+<section class="shop-page">
+
+
+    <!-- =====================================================
+         SHOP HEADER
+    ====================================================== -->
+
+    <div class="shop-header">
+
+        <div class="shop-header-title">
+
+            <p class="eyebrow">
+                COLLECTION
+            </p>
+
+            <h1>
+                {{ page_title }}
+            </h1>
+
+        </div>
+
+
+        <p class="product-count">
+
+            {{ products|length }}
+
+            {% if products|length == 1 %}
+                product
+            {% else %}
+                products
+            {% endif %}
+
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         PRODUCT GRID
+    ====================================================== -->
+
+    <div class="product-grid">
+
+        {% for product in products %}
+
+            <article class="product-card">
+
+    <a
+        href="{{ product.url }}"
+        class="product-image"
+    >
+
+        {% if product.default_variant and product.default_variant.image %}
+
+            {% image product.default_variant.image fill-700x900 as product_image %}
+
+            <img
+                src="{{ product_image.url }}"
+                alt="{{ product.title }}"
+            >
+
+        {% else %}
+
+            <div class="product-image-placeholder">
+                No image available
+            </div>
+
+        {% endif %}
+
+    </a>
+
+
+    <div class="product-card-content">
+
+        <h2 class="product-title">
+            {{ product.title }}
+        </h2>
+
+
+        <p class="product-price">
+            ₦{{ product.price }}
+        </p>
+
+
+        {% if product.is_available %}
+
+            <p class="stock-status in-stock">
+                In stock
+            </p>
+
+        {% else %}
+
+            <p class="stock-status out-of-stock">
+                Out of stock
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</article>
+
+
+        {% empty %}
+
+
+            <!-- =================================================
+                 EMPTY COLLECTION
+            ================================================== -->
+
+            <div class="empty-products">
+
+                <p>
+                    No products available in this collection yet.
+                </p>
+
+            </div>
+
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

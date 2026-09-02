@@ -1,0 +1,468 @@
+{% extends "management/base.html" %}
+
+
+{% block title %}
+    Dashboard | Store Management
+{% endblock %}
+
+
+{% block page_title %}
+    Dashboard
+{% endblock %}
+
+
+{% block management_content %}
+
+<div class="management-dashboard">
+
+
+    <!-- =============================================
+         WELCOME
+    ============================================== -->
+
+    <section class="management-dashboard-intro">
+
+        <div>
+
+            <p class="management-eyebrow">
+                OVERVIEW
+            </p>
+
+            <h2>
+                Welcome back, {{ request.user.username }}.
+            </h2>
+
+            <p>
+                Here's an overview of your store.
+                Manage products, inventory, orders and customers
+                from one place.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =============================================
+         QUICK STATS
+    ============================================== -->
+
+    <section class="management-stat-grid">
+
+        <div class="management-stat-card">
+
+            <div class="management-stat-label">
+                PRODUCTS
+            </div>
+
+            <div class="management-stat-value">
+                {{ total_products }}
+            </div>
+
+            <div class="management-stat-description">
+                Total products
+            </div>
+
+        </div>
+
+
+        <div class="management-stat-card">
+
+            <div class="management-stat-label">
+                INVENTORY
+            </div>
+
+            <div class="management-stat-value">
+                {{ total_inventory }}
+            </div>
+
+            <div class="management-stat-description">
+                Items in stock
+            </div>
+
+        </div>
+
+
+        <div class="management-stat-card">
+
+            <div class="management-stat-label">
+                ORDERS
+            </div>
+
+            <div class="management-stat-value">
+                {{ total_orders }}
+            </div>
+
+            <div class="management-stat-description">
+                Total orders
+            </div>
+
+        </div>
+
+
+        <div class="management-stat-card">
+
+            <div class="management-stat-label">
+                CUSTOMERS
+            </div>
+
+            <div class="management-stat-value">
+                {{ total_customers }}
+            </div>
+
+            <div class="management-stat-description">
+                Registered customers
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =============================================
+         MANAGEMENT AREAS
+    ============================================== -->
+
+    <section class="management-dashboard-section">
+
+        <div class="management-dashboard-section-header">
+
+            <div>
+
+                <p class="management-eyebrow">
+                    STORE
+                </p>
+
+                <h3>
+                    Management
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="management-dashboard-grid">
+
+
+            <!-- PRODUCTS -->
+
+            <a
+                href="{% url 'management:products' %}"
+                class="management-dashboard-card"
+            >
+
+                <div class="management-dashboard-card-top">
+
+                    <span class="management-dashboard-card-number">
+                        01
+                    </span>
+
+                    <span class="management-dashboard-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+                <h4>
+                    Products
+                </h4>
+
+                <p>
+                    Manage products, variants, pricing,
+                    images and availability.
+                </p>
+
+            </a>
+
+
+            <!-- INVENTORY -->
+
+            <a
+                href="{% url 'management:products' %}"
+                class="management-dashboard-card"
+            >
+
+                <div class="management-dashboard-card-top">
+
+                    <span class="management-dashboard-card-number">
+                        02
+                    </span>
+
+                    <span class="management-dashboard-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+                <h4>
+                    Inventory
+                </h4>
+
+                <p>
+                    Monitor stock levels and manage
+                    product inventory.
+                </p>
+
+            </a>
+
+
+            <!-- ORDERS -->
+
+            <a
+                href="{% url 'management:orders' %}"
+                class="management-dashboard-card"
+            >
+
+                <div class="management-dashboard-card-top">
+
+                    <span class="management-dashboard-card-number">
+                        03
+                    </span>
+
+                    <span class="management-dashboard-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+                <h4>
+                    Orders
+                </h4>
+
+                <p>
+                    Review customer orders and manage
+                    their fulfilment status.
+                </p>
+
+            </a>
+
+
+            <!-- CUSTOMERS -->
+
+            <a
+                href="{% url 'management:customers' %}"
+                class="management-dashboard-card"
+            >
+
+                <div class="management-dashboard-card-top">
+
+                    <span class="management-dashboard-card-number">
+                        04
+                    </span>
+
+                    <span class="management-dashboard-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+                <h4>
+                    Customers
+                </h4>
+
+                <p>
+                    View customer accounts and
+                    their purchasing history.
+                </p>
+
+            </a>
+
+
+            <!-- CATEGORIES -->
+
+            <a
+                href="{% url 'management:categories' %}"
+                class="management-dashboard-card"
+            >
+
+                <div class="management-dashboard-card-top">
+
+                    <span class="management-dashboard-card-number">
+                        05
+                    </span>
+
+                    <span class="management-dashboard-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+                <h4>
+                    Categories
+                </h4>
+
+                <p>
+                    Organise your catalogue and
+                    manage product categories.
+                </p>
+
+            </a>
+
+
+            <!-- WEBSITE CONTENT -->
+
+            <a
+                href="/"
+                class="management-dashboard-card"
+            >
+
+                <div class="management-dashboard-card-top">
+
+                    <span class="management-dashboard-card-number">
+                        06
+                    </span>
+
+                    <span class="management-dashboard-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+                <h4>
+                    Website Content
+                </h4>
+
+                <p>
+                    View and manage your storefront
+                    content and presentation.
+                </p>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =============================================
+         LOW STOCK
+    ============================================== -->
+
+    <section class="management-dashboard-section">
+
+        <div class="management-dashboard-section-header">
+
+            <div>
+
+                <p class="management-eyebrow">
+                    INVENTORY
+                </p>
+
+                <h3>
+                    Low Stock
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="management-table-container">
+
+            <table class="management-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Product</th>
+                        <th>Variant</th>
+                        <th>Stock</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for variant in low_stock_variants %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ variant.product.title }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ variant.color }}
+                                /
+                                {{ variant.size }}
+                            </td>
+
+                            <td>
+
+                                <span class="management-status management-status-pending">
+                                    {{ variant.stock }}
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="3">
+                                All products currently have healthy stock levels.
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =============================================
+         QUICK ACTIONS
+    ============================================== -->
+
+    <section class="management-quick-actions">
+
+        <div>
+
+            <p class="management-eyebrow">
+                QUICK ACTION
+            </p>
+
+            <h3>
+                Keep your store moving.
+            </h3>
+
+        </div>
+
+
+        <div class="management-quick-action-buttons">
+
+            <a
+                href="{% url 'management:product_create' %}"
+                class="management-primary-button"
+            >
+                Add Product
+            </a>
+
+            <a
+                href="{% url 'management:products' %}"
+                class="management-secondary-button"
+            >
+                View Products
+            </a>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+{% endblock %}
