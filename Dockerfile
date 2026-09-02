@@ -83,4 +83,4 @@ RUN python manage.py collectstatic --noinput --clear
 #   PRACTICE. The database should be migrated manually or using the release
 #   phase facilities of your hosting platform. This is used only so the
 #   Wagtail instance can be started with a simple "docker run" command.
-CMD set -xe; python manage.py migrate --noinput; python manage.py shell -c "import sys; from django.contrib.auth import get_user_model; sys.exit(0 if get_user_model().objects.filter(username='addidas').exists() else 1)" || python manage.py createsuperuser --noinput; gunicorn ecommerce.wsgi:application
+CMD set -xe; python manage.py migrate --noinput; python manage.py shell -c "import os, sys; from django.contrib.auth import get_user_model; username=os.environ.get('DJANGO_SUPERUSER_USERNAME'); sys.exit(0 if username and get_user_model().objects.filter(username=username).exists() else 1)" || python manage.py createsuperuser --noinput; gunicorn ecommerce.wsgi:application
