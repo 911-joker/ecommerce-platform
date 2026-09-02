@@ -1,5 +1,6 @@
 from .base import *
 import os
+import dj_database_url
 
 
 DEBUG = False
@@ -26,6 +27,15 @@ CSRF_TRUSTED_ORIGINS = [
     ).split(",")
     if origin.strip()
 ]
+
+
+DATABASES = {
+    "default": dj_database_url.parse(
+        os.environ["DATABASE_URL"],
+        conn_max_age=600,
+        ssl_require=True,
+    )
+}
 
 
 SECURE_SSL_REDIRECT = True
