@@ -90,6 +90,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "ecommerce.wsgi.application"
 
 
+# =========================================================
+# AUTHENTICATION
+# =========================================================
+
+LOGIN_URL = "/account/login/"
+LOGIN_REDIRECT_URL = "/account/profile/"
+
+
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
