@@ -1,0 +1,421 @@
+{% extends "management/base.html" %}
+{% load wagtailimages_tags %}
+
+{% block title %}
+    Homepage | Store Management
+{% endblock %}
+
+{% block page_title %}
+    Homepage
+{% endblock %}
+
+{% block management_content %}
+
+<div class="management-form-page">
+
+    <div class="management-section-header">
+        <div>
+            <p class="management-eyebrow">
+                WEBSITE CONTENT
+            </p>
+
+            <h2>
+                Homepage
+            </h2>
+
+            <p>
+                Manage the content and imagery displayed on your storefront homepage.
+            </p>
+        </div>
+    </div>
+
+
+    {% if homepage_missing %}
+
+        <div class="management-form-section">
+
+            <h3>
+                Homepage Not Found
+            </h3>
+
+            <p>
+                No homepage exists in the current database.
+            </p>
+
+        </div>
+
+    {% else %}
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            {% if form.non_field_errors %}
+
+                <div class="management-form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- =========================================
+                 HERO
+            ========================================== -->
+
+            <section class="management-form-section">
+
+                <h3>
+                    Hero Section
+                </h3>
+
+
+                <div class="management-form-grid">
+
+
+                    <div class="management-form-field">
+
+                        <label for="{{ form.hero_image.id_for_label }}">
+                            Hero Image
+                        </label>
+
+                        {{ form.hero_image }}
+
+                        {{ form.hero_image.errors }}
+
+                    </div>
+
+
+                    <div class="management-form-field">
+
+                        <label for="{{ form.hero_eyebrow.id_for_label }}">
+                            Eyebrow
+                        </label>
+
+                        {{ form.hero_eyebrow }}
+
+                        {{ form.hero_eyebrow.errors }}
+
+                    </div>
+
+
+                    <div class="management-form-field">
+
+                        <label for="{{ form.hero_title.id_for_label }}">
+                            Hero Title
+                        </label>
+
+                        {{ form.hero_title }}
+
+                        {{ form.hero_title.errors }}
+
+                    </div>
+
+
+                    <div class="management-form-field">
+
+                        <label for="{{ form.hero_description.id_for_label }}">
+                            Description
+                        </label>
+
+                        {{ form.hero_description }}
+
+                        {{ form.hero_description.errors }}
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================================
+                 COLLECTIONS
+            ========================================== -->
+
+            <section class="management-form-section">
+
+                <h3>
+                    Collection Images
+                </h3>
+
+
+                <div class="management-form-grid">
+
+
+                    <div class="management-form-field">
+
+                        <label for="{{ form.men_image.id_for_label }}">
+                            Men's Image
+                        </label>
+
+                        {{ form.men_image }}
+
+                        {{ form.men_image.errors }}
+
+                    </div>
+
+
+                    <div class="management-form-field">
+
+                        <label for="{{ form.women_image.id_for_label }}">
+                            Women's Image
+                        </label>
+
+                        {{ form.women_image }}
+
+                        {{ form.women_image.errors }}
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <section class="management-form-section">
+    <h3>Collection Section</h3>
+
+    <div class="management-form-grid">
+
+        <div class="management-form-field">
+            <label for="{{ form.category_eyebrow.id_for_label }}">
+                Collection Eyebrow
+            </label>
+            {{ form.category_eyebrow }}
+            {{ form.category_eyebrow.errors }}
+        </div>
+
+        <div class="management-form-field">
+            <label for="{{ form.category_title.id_for_label }}">
+                Collection Title
+            </label>
+            {{ form.category_title }}
+            {{ form.category_title.errors }}
+        </div>
+
+        <div class="management-form-field">
+            <label for="{{ form.category_description.id_for_label }}">
+                Collection Description
+            </label>
+            {{ form.category_description }}
+            {{ form.category_description.errors }}
+        </div>
+
+        <div class="management-form-field">
+            <label for="{{ form.men_title.id_for_label }}">
+                Men's Title
+            </label>
+            {{ form.men_title }}
+            {{ form.men_title.errors }}
+        </div>
+
+        <div class="management-form-field">
+            <label for="{{ form.women_title.id_for_label }}">
+                Women's Title
+            </label>
+            {{ form.women_title }}
+            {{ form.women_title.errors }}
+        </div>
+
+    </div>
+</section>
+
+
+<section class="management-form-section">
+    <h3>New Arrivals</h3>
+
+    <div class="management-form-grid">
+
+        <div class="management-form-field">
+            <label for="{{ form.new_arrivals_eyebrow.id_for_label }}">
+                Eyebrow
+            </label>
+            {{ form.new_arrivals_eyebrow }}
+            {{ form.new_arrivals_eyebrow.errors }}
+        </div>
+
+        <div class="management-form-field">
+            <label for="{{ form.new_arrivals_title.id_for_label }}">
+                Title
+            </label>
+            {{ form.new_arrivals_title }}
+            {{ form.new_arrivals_title.errors }}
+        </div>
+
+<div class="management-form-field">
+    <label>Products</label>
+
+<div class="management-product-selector">
+
+    {% for product in products %}
+
+        {% with variant=product.variants.first %}
+
+            <label class="management-product-option">
+
+                <input
+                    type="checkbox"
+                    name="new_arrival_products"
+                    value="{{ product.id }}"
+                    {% if product.id in selected_product_ids %}
+                        checked
+                    {% endif %}
+                >
+
+                <div class="management-product-thumbnail">
+
+                    {% if variant and variant.image %}
+
+                        {% image variant.image fill-80x100 as product_thumbnail %}
+
+                        <img
+                            src="{{ product_thumbnail.url }}"
+                            alt="{{ product.title }}"
+                        >
+
+                    {% else %}
+
+                        <div class="management-product-thumbnail-placeholder">
+                            No image
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="management-product-info">
+
+                    <span class="management-product-name">
+                        {{ product.title }}
+                    </span>
+
+                    <span class="management-product-price">
+                        ₦{{ product.price }}
+                    </span>
+
+                </div>
+
+            </label>
+
+        {% endwith %}
+
+    {% empty %}
+
+        <p>No products available.</p>
+
+    {% endfor %}
+
+</div>
+
+    <small>
+        Select the products you want to feature in New Arrivals.
+    </small>
+</div>
+
+    </div>
+</section>
+
+
+            <!-- =========================================
+                 EDITORIAL
+            ========================================== -->
+
+            <section class="management-form-section">
+
+                <h3>
+                    Editorial Section
+                </h3>
+
+
+                <div class="management-form-grid">
+
+
+                    <div class="management-form-field">
+
+                        <label for="{{ form.editorial_image.id_for_label }}">
+                            Editorial Image
+                        </label>
+
+                        {{ form.editorial_image }}
+
+                        {{ form.editorial_image.errors }}
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <section class="management-form-section">
+    <h3>Editorial Content</h3>
+
+    <div class="management-form-grid">
+
+        <div class="management-form-field">
+            <label for="{{ form.editorial_eyebrow.id_for_label }}">
+                Eyebrow
+            </label>
+            {{ form.editorial_eyebrow }}
+            {{ form.editorial_eyebrow.errors }}
+        </div>
+
+        <div class="management-form-field">
+            <label for="{{ form.editorial_title.id_for_label }}">
+                Title
+            </label>
+            {{ form.editorial_title }}
+            {{ form.editorial_title.errors }}
+        </div>
+
+        <div class="management-form-field">
+            <label for="{{ form.editorial_description.id_for_label }}">
+                Description
+            </label>
+            {{ form.editorial_description }}
+            {{ form.editorial_description.errors }}
+        </div>
+
+    </div>
+</section>
+
+
+            <!-- =========================================
+                 ACTIONS
+            ========================================== -->
+
+            <div class="management-form-actions">
+
+                <a
+                    href="{% url 'management:dashboard' %}"
+                    class="management-secondary-button"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="management-primary-button"
+                >
+                    Save Homepage
+                </button>
+
+            </div>
+
+
+        </form>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

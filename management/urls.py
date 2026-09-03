@@ -14,6 +14,18 @@ urlpatterns = [
         name="dashboard",
     ),
 
+    path(
+        "homepage/",
+        views.homepage_edit,
+        name="homepage",    
+    ),
+
+    path(
+        "media/",
+        views.media_library,
+        name="media",
+    ),
+
     # PRODUCTS
 
     path(

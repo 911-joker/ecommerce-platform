@@ -1,0 +1,138 @@
+{% extends "management/base.html" %}
+{% load wagtailimages_tags %}
+
+{% block title %}
+    Media | Store Management
+{% endblock %}
+
+{% block page_title %}
+    Media
+{% endblock %}
+
+{% block management_content %}
+
+<div class="management-form-page">
+
+    <div class="management-section-header">
+        <div>
+            <p class="management-eyebrow">
+                MEDIA LIBRARY
+            </p>
+
+            <h2>
+                Media
+            </h2>
+
+            <p>
+                Browse and manage the images used throughout your storefront.
+            </p>
+
+            <form
+    method="post"
+    enctype="multipart/form-data"
+    class="management-media-upload"
+>
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    <div class="management-form-grid">
+
+        <div class="management-form-field">
+            <label for="{{ form.title.id_for_label }}">
+                Image Title
+            </label>
+
+            {{ form.title }}
+
+            {{ form.title.errors }}
+        </div>
+
+        <div class="management-form-field">
+            <label for="{{ form.file.id_for_label }}">
+                Image
+            </label>
+
+            {{ form.file }}
+
+            {{ form.file.errors }}
+        </div>
+
+    </div>
+
+    <button
+        type="submit"
+        class="management-primary-button"
+    >
+        Upload Image
+    </button>
+
+</form>
+
+        </div>
+    </div>
+
+    <section class="management-form-section">
+
+        <div class="management-section-header">
+            <div>
+                <h3>
+                    Images
+                </h3>
+
+                <p>
+                    Images currently stored in your Wagtail media library.
+                </p>
+            </div>
+        </div>
+
+        {% if images %}
+
+            <div class="management-media-grid">
+
+                {% for image in images %}
+
+                    <article class="management-media-card">
+
+                        <div class="management-media-preview">
+
+                            {% image image fill-400x400 as thumbnail %}
+
+                            <img
+                                src="{{ thumbnail.url }}"
+                                alt="{{ image.title }}"
+                            >
+
+                        </div>
+
+                        <div class="management-media-info">
+
+                            <h4>
+                                {{ image.title }}
+                            </h4>
+
+                            <p>
+                                {{ image.width }} × {{ image.height }}
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p>
+                No images have been uploaded yet.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

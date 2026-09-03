@@ -64,91 +64,78 @@
 ===================================================== -->
 
 <section class="category-section">
-
     <div class="section-inner">
 
         <p class="eyebrow">
-            EXPLORE
+            {{ page.category_eyebrow }}
         </p>
 
         <h2 class="section-title">
-            Find Your Style.
+            {{ page.category_title }}
         </h2>
 
-        <p class="section-description">
-            Explore our collections designed for every
-            style, occasion and everyday moment.
-        </p>
-
+        {% if page.category_description %}
+            <p class="section-description">
+                {{ page.category_description }}
+            </p>
+        {% endif %}
 
         <div class="category-grid">
-
-
-            <!-- MEN -->
 
             <article class="category-card">
 
                 {% if page.men_image %}
-
                     {% image page.men_image original as men %}
 
                     <img
                         src="{{ men.url }}"
-                        alt="Men's Collection"
+                        alt="{{ page.men_title }}"
                     >
-
                 {% endif %}
 
                 <div class="category-card-content">
 
                     <h3>
-                        Men
+                        {{ page.men_title }}
                     </h3>
 
                     <a href="{% url 'store:men' %}">
-                        Explore Men's Collection
+                        Explore {{ page.men_title }}'s Collection
                     </a>
 
                 </div>
 
             </article>
 
-
-
-            <!-- WOMEN -->
 
             <article class="category-card">
 
                 {% if page.women_image %}
-
                     {% image page.women_image original as women %}
 
                     <img
                         src="{{ women.url }}"
-                        alt="Women's Collection"
+                        alt="{{ page.women_title }}"
                     >
-
                 {% endif %}
 
                 <div class="category-card-content">
 
                     <h3>
-                        Women
+                        {{ page.women_title }}
                     </h3>
 
                     <a href="{% url 'store:women' %}">
-                        Explore Women's Collection
+                        Explore {{ page.women_title }}'s Collection
                     </a>
 
                 </div>
 
             </article>
 
-
         </div>
 
     </div>
-
 </section>
 
 
@@ -158,46 +145,31 @@
 ===================================================== -->
 
 <section class="product-section">
-
     <div class="product-section-header">
-
         <div>
-
-            <p class="eyebrow">
-                DISCOVER
-            </p>
-
-            <h2>
-                New Arrivals
-            </h2>
-
+            <p class="eyebrow">{{ page.new_arrivals_eyebrow }}</p>
+            <h2>{{ page.new_arrivals_title }}</h2>
         </div>
 
         <a href="{% url 'store:shop' %}">
             View All
         </a>
-
     </div>
-
 
     <div class="product-grid">
 
-        {% with products=page.get_children.live %}
+        {% for arrival in page.new_arrivals.all|slice:":4" %}
 
-            {% for product in products|slice:":4" %}
-
-                {% with product=product.specific %}
+            {% with product=arrival.product %}
+                {% with variant=product.variants.first %}
 
                     <article class="product-card">
 
-                        <a
-                            href="{{ product.url }}"
-                            class="product-image"
-                        >
+                        <a href="{{ product.url }}" class="product-image">
 
-                            {% if product.image %}
+                            {% if variant and variant.image %}
 
-                                {% image product.image fill-700x900 as product_image %}
+                                {% image variant.image fill-700x900 as product_image %}
 
                                 <img
                                     src="{{ product_image.url }}"
@@ -207,7 +179,6 @@
                             {% endif %}
 
                         </a>
-
 
                         <div class="product-card-content">
 
@@ -224,19 +195,15 @@
                     </article>
 
                 {% endwith %}
+            {% endwith %}
 
-            {% empty %}
+        {% empty %}
 
-                <p>
-                    No products available yet.
-                </p>
+            <p>No products selected for New Arrivals.</p>
 
-            {% endfor %}
-
-        {% endwith %}
+        {% endfor %}
 
     </div>
-
 </section>
 
 
@@ -246,7 +213,6 @@
 ===================================================== -->
 
 {% if page.editorial_image %}
-
     {% image page.editorial_image original as editorial %}
 
     <section
@@ -258,21 +224,24 @@
 
         <div class="editorial-content">
 
-            <p class="eyebrow">
-                THE COLLECTION
-            </p>
+            {% if page.editorial_eyebrow %}
+                <p class="eyebrow">
+                    {{ page.editorial_eyebrow }}
+                </p>
+            {% endif %}
 
             <h2>
-                Elevate Your Everyday.
+                {{ page.editorial_title }}
             </h2>
 
-            <p>
-                Discover pieces designed to make
-                every moment feel effortless.
-            </p>
+            {% if page.editorial_description %}
+                <p>
+                    {{ page.editorial_description }}
+                </p>
+            {% endif %}
 
             <a
-                href="/shop/"
+                href="{% url 'store:shop' %}"
                 class="primary-button"
             >
                 Shop Now
@@ -281,7 +250,6 @@
         </div>
 
     </section>
-
 {% endif %}
 
 

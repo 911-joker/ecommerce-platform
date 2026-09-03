@@ -1,3 +1,5 @@
+from wagtail.models import Site
+from wagtail.images import get_image_model
 from django.contrib.auth.decorators import user_passes_test
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
@@ -11,11 +13,16 @@ from store.models import (
     Category,
 )
 
+from home.models import HomePage, HomePageNewArrival
+
 from .forms import (
     ProductForm,
     ProductVariantFormSet,
     ProductVariantCreateFormSet,
     CategoryForm,
+    HomePageForm,
+    NewArrivalForm,
+    MediaUploadForm,
 )
 
 
@@ -73,6 +80,135 @@ def dashboard(request):
             "total_customers": total_customers,
             "pending_orders": pending_orders,
             "low_stock_variants": low_stock_variants,
+        },
+    )
+
+
+# =========================================================
+# WEBSITE CONTENT
+# =========================================================
+
+@store_owner_required
+def homepage_edit(request):
+    site = Site.objects.get(is_default_site=True)
+    homepage = site.root_page.specific
+
+    if homepage is None:
+        return render(
+            request,
+            "management/homepage_form.html",
+            {
+                "form": None,
+                "homepage_missing": True,
+            },
+        )
+
+    if request.method == "POST":
+        form = HomePageForm(
+            request.POST,
+            request.FILES,
+            instance=homepage,
+        )
+
+        if form.is_valid():
+            form.save()
+
+            selected_products = request.POST.getlist(
+                "new_arrival_products"
+            )
+
+            HomePageNewArrival.objects.filter(
+                page=homepage
+            ).delete()
+
+            for product_id in selected_products:
+                product = Product.objects.filter(
+                    id=product_id
+                ).first()
+
+                if product:
+                    HomePageNewArrival.objects.create(
+                        page=homepage,
+                        product=product,
+                    )
+
+            return redirect(
+                "management:homepage",
+            )
+
+    else:
+        form = HomePageForm(
+            instance=homepage,
+        )
+
+    new_arrivals = HomePageNewArrival.objects.filter(
+        page=homepage
+    ).select_related(
+        "product"
+    )
+
+    products = Product.objects.all().order_by(
+        "title"
+    )
+
+    selected_product_ids = set(
+        new_arrivals.values_list(
+            "product_id",
+            flat=True,
+        )
+    )
+
+    return render(
+        request,
+        "management/homepage_form.html",
+        {
+            "form": form,
+            "homepage": homepage,
+            "products": products,
+            "new_arrivals": new_arrivals,
+            "selected_product_ids": selected_product_ids,
+        },
+    )
+
+
+# =========================================================
+# MEDIA
+# =========================================================
+
+@store_owner_required
+def media_library(request):
+
+    Image = get_image_model()
+
+    if request.method == "POST":
+
+        form = MediaUploadForm(
+            request.POST,
+            request.FILES,
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect(
+                "management:media"
+            )
+
+    else:
+
+        form = MediaUploadForm()
+
+    images = Image.objects.all().order_by(
+        "-created_at"
+    )
+
+    return render(
+        request,
+        "management/media.html",
+        {
+            "images": images,
+            "form": form,
         },
     )
 
